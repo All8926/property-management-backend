@@ -3,6 +3,7 @@ package com.app.project.service.impl;
 import static com.app.project.constant.UserConstant.USER_LOGIN_STATE;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
 import com.app.project.exception.ThrowUtils;
 import com.app.project.model.dto.user.UserRegisterRequest;
 import com.app.project.model.dto.user.UserUpdatePasswordRequest;
@@ -81,6 +82,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             BeanUtils.copyProperties(userRegisterRequestd, user);
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
+            // 生成随机用户昵称
+            Integer random =  RandomUtil.randomInt(999, 9999);
+            String userName = "用户" + random;
+            user.setUserName(userName);
+
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");

@@ -43,6 +43,38 @@ create table if not exists payment_item
     isDelete       tinyint  default 0                 not null comment '是否删除'
 ) comment '缴费项目' collate = utf8mb4_unicode_ci;
 
+-- 缴费记录表
+create table if not exists payment_record
+(
+    id          bigint auto_increment comment 'id' primary key,
+    paymentId   bigint                             not null comment '缴费项目id',
+    paymentName varchar(256)                       not null comment '项目名称',
+    payAmount   varchar(256)                       null comment '缴费金额',
+    payDate     datetime                           null comment '缴费时间',
+    userId      bigint                             not null comment '创建人',
+    userName    varchar(256)                       not null comment '创建人姓名',
+    createTime  datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete    tinyint  default 0                 not null comment '是否删除'
+) comment '缴费项目' collate = utf8mb4_unicode_ci;
+
+
+-- 投诉表
+create table if not exists complaint
+(
+    id         bigint auto_increment comment 'id' primary key,
+    title      varchar(256)                       not null comment '标题',
+    content    varchar(1024)                      null comment '详情',
+    image      text                               null comment '图片',
+    remark     varchar(512)                       null comment '备注',
+    status     tinyint  default 0                 not null comment '0-待处理  1-不予处理  2-已处理',
+    userId     bigint                             not null comment '创建人',
+    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0                 not null comment '是否删除'
+) comment '投诉记录' collate = utf8mb4_unicode_ci;
+
+
 -- 帖子表
 create table if not exists post
 (
