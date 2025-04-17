@@ -2,6 +2,7 @@ package com.app.project.model.dto.complaint;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class ComplaintEditRequest implements Serializable {
     /**
      * id
      */
+    @NotNull
     private Long id;
 
     /**

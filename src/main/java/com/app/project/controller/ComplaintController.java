@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -55,7 +56,7 @@ public class ComplaintController {
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addComplaint(@RequestBody ComplaintAddRequest complaintAddRequest, HttpServletRequest request) {
+    public BaseResponse<Long> addComplaint(@Valid @RequestBody ComplaintAddRequest complaintAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(complaintAddRequest == null, ErrorCode.PARAMS_ERROR);
         // todo 在此处将实体类和 DTO 进行转换
         Complaint complaint = new Complaint();
@@ -83,7 +84,7 @@ public class ComplaintController {
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteComplaint(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteComplaint(@Valid @RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -93,7 +94,7 @@ public class ComplaintController {
         Complaint oldComplaint = complaintService.getById(id);
         ThrowUtils.throwIf(oldComplaint == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldComplaint.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
+        if (!oldComplaint.getUserId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库
@@ -110,7 +111,7 @@ public class ComplaintController {
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updateComplaint(@RequestBody ComplaintUpdateRequest complaintUpdateRequest) {
+    public BaseResponse<Boolean> updateComplaint(@Valid @RequestBody ComplaintUpdateRequest complaintUpdateRequest) {
         if (complaintUpdateRequest == null || complaintUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -137,7 +138,7 @@ public class ComplaintController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<ComplaintVO>> listComplaintVOByPage(@RequestBody ComplaintQueryRequest complaintQueryRequest,
+    public BaseResponse<Page<ComplaintVO>> listComplaintVOByPage( @RequestBody ComplaintQueryRequest complaintQueryRequest,
                                                                HttpServletRequest request) {
         long current = complaintQueryRequest.getCurrent();
         long size = complaintQueryRequest.getPageSize();
@@ -160,7 +161,7 @@ public class ComplaintController {
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Boolean> editComplaint(@RequestBody ComplaintEditRequest complaintEditRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> editComplaint(@Valid @RequestBody ComplaintEditRequest complaintEditRequest, HttpServletRequest request) {
         if (complaintEditRequest == null || complaintEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

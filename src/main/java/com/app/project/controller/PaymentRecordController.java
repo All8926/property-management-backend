@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * 缴费记录接口
@@ -46,7 +47,7 @@ public class PaymentRecordController {
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Boolean> addPaymentRecord(@RequestBody PaymentRecordAddRequest paymentRecordAddRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> addPaymentRecord(@Valid @RequestBody PaymentRecordAddRequest paymentRecordAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(paymentRecordAddRequest == null, ErrorCode.PARAMS_ERROR);
 
         User loginUser = userService.getLoginUser(request);
