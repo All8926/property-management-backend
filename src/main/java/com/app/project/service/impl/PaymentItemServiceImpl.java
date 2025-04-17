@@ -38,7 +38,6 @@ public class PaymentItemServiceImpl extends ServiceImpl<PaymentItemMapper, Payme
     private UserService userService;
 
 
-
     /**
      * 获取查询条件
      *
@@ -113,7 +112,7 @@ public class PaymentItemServiceImpl extends ServiceImpl<PaymentItemMapper, Payme
                 user = userIdUserListMap.get(userId).get(0);
             }
             paymentItemVO.setCreateUser(userService.getUserVO(user));
-      });
+        });
         // endregion
 
         paymentItemVOPage.setRecords(paymentItemVOList);

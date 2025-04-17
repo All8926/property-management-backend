@@ -50,49 +50,7 @@ public class PaymentRecordServiceImpl extends ServiceImpl<PaymentRecordMapper, P
     @Resource
     private UserService userService;
     
-    
-    /**
-     * 获取查询条件
-     *
-     * @param paymentRecordQueryRequest
-     * @return
-     */
-    @Override
-    public QueryWrapper<PaymentRecord> getQueryWrapper(PaymentRecordQueryRequest paymentRecordQueryRequest, User logonUser) {
-        QueryWrapper<PaymentRecord> queryWrapper = new QueryWrapper<>();
-        if (paymentRecordQueryRequest == null) {
-            return queryWrapper;
-        }
-        // 取值
-        Long id = paymentRecordQueryRequest.getId();
-        String paymentName = paymentRecordQueryRequest.getPaymentName();
-        String userName = paymentRecordQueryRequest.getUserName();
-        Date payDate = paymentRecordQueryRequest.getPayDate();
-  
-        String sortField = paymentRecordQueryRequest.getSortField();
-        String sortOrder = paymentRecordQueryRequest.getSortOrder();
 
-        // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(paymentName), "paymentName", paymentName);
-        queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName); 
-
-        // 精确查询
-        queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);  
-        // 小于等于过期时间
-        queryWrapper.le(ObjectUtils.isNotEmpty(payDate), "payDate", payDate);
-        
-        // 非管理员只能获取自己的
-        String userRole = logonUser.getUserRole();
-        if (!userRole.equals(UserConstant.ADMIN_ROLE)) {
-            queryWrapper.eq("userId", logonUser.getId());
-        }
-
-        // 排序规则
-        queryWrapper.orderBy(SqlUtils.validSortField(sortField),
-                sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
-                sortField);
-        return queryWrapper;
-    }
 
     @Override
     public Boolean addPaymentRecord(PaymentRecordAddRequest paymentRecordAddRequest, User loginUser) {
@@ -122,6 +80,50 @@ public class PaymentRecordServiceImpl extends ServiceImpl<PaymentRecordMapper, P
         boolean result = this.save(paymentRecord);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return true;
+    }
+
+
+    /**
+     * 获取查询条件
+     *
+     * @param paymentRecordQueryRequest
+     * @return
+     */
+    @Override
+    public QueryWrapper<PaymentRecord> getQueryWrapper(PaymentRecordQueryRequest paymentRecordQueryRequest, User logonUser) {
+        QueryWrapper<PaymentRecord> queryWrapper = new QueryWrapper<>();
+        if (paymentRecordQueryRequest == null) {
+            return queryWrapper;
+        }
+        // 取值
+        Long id = paymentRecordQueryRequest.getId();
+        String paymentName = paymentRecordQueryRequest.getPaymentName();
+        String userName = paymentRecordQueryRequest.getUserName();
+        Date payDate = paymentRecordQueryRequest.getPayDate();
+
+        String sortField = paymentRecordQueryRequest.getSortField();
+        String sortOrder = paymentRecordQueryRequest.getSortOrder();
+
+        // 模糊查询
+        queryWrapper.like(StringUtils.isNotBlank(paymentName), "paymentName", paymentName);
+        queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
+
+        // 精确查询
+        queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
+        // 小于等于过期时间
+        queryWrapper.le(ObjectUtils.isNotEmpty(payDate), "payDate", payDate);
+
+        // 非管理员只能获取自己的
+        String userRole = logonUser.getUserRole();
+        if (!userRole.equals(UserConstant.ADMIN_ROLE)) {
+            queryWrapper.eq("userId", logonUser.getId());
+        }
+
+        // 排序规则
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField),
+                sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
+                sortField);
+        return queryWrapper;
     }
 
     @Override
