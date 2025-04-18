@@ -5,15 +5,10 @@ import com.app.project.constant.CommonConstant;
 import com.app.project.constant.UserConstant;
 import com.app.project.mapper.ComplaintMapper;
 import com.app.project.model.dto.complaint.ComplaintQueryRequest;
-import com.app.project.model.dto.paymentRecord.PaymentRecordQueryRequest;
 import com.app.project.model.entity.Complaint;
-import com.app.project.model.entity.PaymentItem;
-import com.app.project.model.entity.PaymentRecord;
 import com.app.project.model.entity.User;
 import com.app.project.model.vo.ComplaintVO;
-import com.app.project.model.vo.PaymentRecordVO;
 import com.app.project.service.ComplaintService;
-
 import com.app.project.service.UserService;
 import com.app.project.utils.SqlUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,12 +16,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +44,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
      * @return
      */
     @Override
-    public QueryWrapper<Complaint> getQueryWrapper(ComplaintQueryRequest complaintQueryRequest, User logonUser) {
+    public QueryWrapper<Complaint> getQueryWrapper(ComplaintQueryRequest complaintQueryRequest, User loginUser) {
         QueryWrapper<Complaint> queryWrapper = new QueryWrapper<>();
         if (complaintQueryRequest == null) {
             return queryWrapper;
@@ -73,9 +66,9 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
 
 
         // 非管理员只能获取自己的
-        String userRole = logonUser.getUserRole();
+        String userRole = loginUser.getUserRole();
         if (!userRole.equals(UserConstant.ADMIN_ROLE)) {
-            queryWrapper.eq("userId", logonUser.getId());
+            queryWrapper.eq("userId", loginUser.getId());
         }
 
         // 排序规则
@@ -92,7 +85,7 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         if (CollUtil.isEmpty(complaintList)) {
             return complaintVOPage;
         }
-        // paymentRecord => paymentRecordVO
+        // Complaint => ComplaintVO
         List<ComplaintVO> complaintVOList = complaintList.stream().map(ComplaintVO::objToVo).collect(Collectors.toList());
 
         // 1. 关联查询用户信息

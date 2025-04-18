@@ -39,7 +39,7 @@ public class ComplaintVO implements Serializable {
     private Long userId;
 
     /**
-     * 0-待处理  1-不予处理  2-已处理
+     * 0-待处理  1-已处理  2-不予处理
      */
     private Integer status;
 

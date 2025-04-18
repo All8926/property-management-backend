@@ -1,9 +1,10 @@
 package com.app.project.model.enums;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * 文件上传业务类型枚举
@@ -15,7 +16,9 @@ public enum FileUploadBizEnum {
 
     USER_AVATAR("用户头像", "user_avatar"),
     COMPLAINT_IMAGE("投诉图片", "complaint_image"),
-    REPAIR_IMAGE("报修图片", "repairs_image");
+    REPAIR_IMAGE("报修图片", "repairs_image"),
+    NOTICE_IMAGE("公告图片", "notice_image");
+
 
     private final String text;
 
