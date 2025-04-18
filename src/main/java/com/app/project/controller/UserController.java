@@ -1,6 +1,7 @@
 package com.app.project.controller;
 
 import com.app.project.model.dto.user.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.app.project.annotation.AuthCheck;
 import com.app.project.common.BaseResponse;
@@ -316,5 +317,15 @@ public class UserController {
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
+    }
+
+    /**
+     * 获取维修人员
+     */
+    @GetMapping("/repairs/list")
+    public BaseResponse<List<UserVO>> getRepairsList() {
+        List<User> userList = userService.list(new QueryWrapper<User>().eq("userRole", UserConstant.SERVICEMAN_ROLE));
+        List<UserVO> userVOList = userService.getUserVO(userList);
+        return ResultUtils.success(userVOList);
     }
 }

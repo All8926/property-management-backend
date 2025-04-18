@@ -1,27 +1,31 @@
 package com.app.project.model.enums;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
- * 文件上传业务类型枚举
+ * 用户角色枚举
  *
  * @author 
  * @from 
  */
-public enum FileUploadBizEnum {
+public enum RepairsStatusEnum {
 
-    USER_AVATAR("用户头像", "user_avatar"),
-    COMPLAINT_IMAGE("投诉图片", "complaint_image"),
-    REPAIR_IMAGE("报修图片", "repairs_image");
+    IN_REVIEW("审核中", 0),
+    REJECTED("已驳回", 1),
+    UNDER_REPAIR("维修中", 2),
+    UNREPAIRABLE("无法维修", 3),
+    PENDING_EVALUATION("待评价", 4),
+    COMPLETED("已完成", 5);
 
     private final String text;
 
-    private final String value;
+    private final Integer value;
 
-    FileUploadBizEnum(String text, String value) {
+    RepairsStatusEnum(String text, Integer value) {
         this.text = text;
         this.value = value;
     }
@@ -31,7 +35,7 @@ public enum FileUploadBizEnum {
      *
      * @return
      */
-    public static List<String> getValues() {
+    public static List<Integer> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
     }
 
@@ -41,11 +45,11 @@ public enum FileUploadBizEnum {
      * @param value
      * @return
      */
-    public static FileUploadBizEnum getEnumByValue(String value) {
+    public static RepairsStatusEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (FileUploadBizEnum anEnum : FileUploadBizEnum.values()) {
+        for (RepairsStatusEnum anEnum : RepairsStatusEnum.values()) {
             if (anEnum.value.equals(value)) {
                 return anEnum;
             }
@@ -53,7 +57,7 @@ public enum FileUploadBizEnum {
         return null;
     }
 
-    public String getValue() {
+    public Integer getValue() {
         return value;
     }
 

@@ -31,7 +31,7 @@ public interface ComplaintService extends IService<Complaint> {
 
 
     /**
-     * 分页获取缴费项目封装
+     * 分页获取投诉列表封装
      *
      * @param complaintPage
      * @param request

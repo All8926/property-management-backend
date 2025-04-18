@@ -101,13 +101,13 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
                 .collect(Collectors.groupingBy(User::getId));
 
         // 填充信息
-        complaintVOList.forEach(paymentItemVO -> {
-            Long userId = paymentItemVO.getUserId();
+        complaintVOList.forEach(complaintVO -> {
+            Long userId = complaintVO.getUserId();
             User user = null;
             if (userIdUserListMap.containsKey(userId)) {
                 user = userIdUserListMap.get(userId).get(0);
             }
-            paymentItemVO.setUser(userService.getUserVO(user));
+            complaintVO.setUser(userService.getUserVO(user));
         });
         // endregion
 

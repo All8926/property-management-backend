@@ -93,7 +93,7 @@ public class ComplaintController {
         // 判断是否存在
         Complaint oldComplaint = complaintService.getById(id);
         ThrowUtils.throwIf(oldComplaint == null, ErrorCode.NOT_FOUND_ERROR);
-        // 仅本人或管理员可删除
+        // 仅本人可删除
         if (!oldComplaint.getUserId().equals(user.getId())) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
@@ -115,7 +115,6 @@ public class ComplaintController {
         if (complaintUpdateRequest == null || complaintUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        // todo 在此处将实体类和 DTO 进行转换
         Complaint complaint = new Complaint();
         BeanUtils.copyProperties(complaintUpdateRequest, complaint);
 
@@ -169,7 +168,7 @@ public class ComplaintController {
         Complaint complaint = new Complaint();
         BeanUtils.copyProperties(complaintEditRequest, complaint);
         List<String> image = complaintEditRequest.getImageList();
-        if(CollectionUtils.isNotEmpty(image)){
+        if(image != null){
             complaint.setImage(JSONUtil.toJsonStr(image));
         }
 

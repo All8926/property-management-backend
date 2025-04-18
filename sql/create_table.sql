@@ -74,6 +74,24 @@ create table if not exists complaint
     isDelete   tinyint  default 0                 not null comment '是否删除'
 ) comment '投诉记录' collate = utf8mb4_unicode_ci;
 
+-- 报修表
+use property_management;
+create table if not exists repairs
+(
+    id         bigint auto_increment comment 'id' primary key,
+    title      varchar(256)                       not null comment '标题',
+    content    varchar(1024)                      null comment '详情',
+    image      text                               null comment '图片',
+    remark     varchar(512)                       null comment '备注',
+    status     tinyint  default 0                 not null comment '0-审核中  1-已拒绝  2-维修中  3-无法维修  4-待评价  5-已完成',
+    userId     bigint                             not null comment '报修人',
+    servicemanId   bigint                               null comment '维修人id',
+    comment    varchar(512)                       null comment '评价',
+    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0                 not null comment '是否删除'
+) comment '报修记录' collate = utf8mb4_unicode_ci;
+
 
 -- 帖子表
 create table if not exists post

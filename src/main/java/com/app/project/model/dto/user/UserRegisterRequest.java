@@ -31,6 +31,6 @@ public class UserRegisterRequest implements Serializable {
     @Size(max = 10, message = "不能超过10个字符")
     private String userName;
 
-    @Size(max = 11, message = "不能超过11个字符")
+    @Size(max = 11, message = "不能超过11个位")
     private String userPhone;
 }
