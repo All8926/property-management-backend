@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * 公告接口
@@ -133,20 +134,49 @@ public class NoticeController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<NoticeVO>> listNoticeVOByPage( @RequestBody NoticeQueryRequest noticeQueryRequest,
-                                                               HttpServletRequest request) {
+    public BaseResponse<Page<NoticeVO>> listNoticeVOByPage(@RequestBody NoticeQueryRequest noticeQueryRequest,
+                                                           HttpServletRequest request) {
         long current = noticeQueryRequest.getCurrent();
         long size = noticeQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
-          User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(request);
         Page<Notice> noticePage = noticeService.page(new Page<>(current, size),
-                noticeService.getQueryWrapper(noticeQueryRequest,loginUser));
+                noticeService.getQueryWrapper(noticeQueryRequest, loginUser));
         // 获取封装类
         return ResultUtils.success(noticeService.getNoticeVOPage(noticePage, request));
     }
- 
+
+    /**
+     * 发布/取消公告
+     */
+    @PostMapping("/publish")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> publishNotice(@RequestBody Integer id, HttpServletRequest request) {
+        if (id == null || id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断是否存在
+        Notice oldNotice = noticeService.getById(id);
+        ThrowUtils.throwIf(oldNotice == null, ErrorCode.NOT_FOUND_ERROR);
+
+        Notice notice = new Notice();
+        BeanUtils.copyProperties(oldNotice, notice);
+
+        // 状态取反
+        notice.setStatus(notice.getStatus() == 0 ? 1 : 0);
+        // 设置发布时间
+        if (notice.getStatus() == 1) {
+            notice.setPublishTime(new Date());
+        }
+
+        // 操作数据库
+        boolean result = noticeService.updateById(notice);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return ResultUtils.success(true);
+    }
+
 
     // endregion
 }
